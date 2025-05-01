@@ -122,12 +122,10 @@ public class UserService {
         try {
         	String password = user.getPassword();
         	//パスワードが空じゃなかったら暗号化を行う
-        	if(!StringUtils.isBlank(password)) {
-
-
-        	// パスワード暗号化
-            String encPassword = CipherUtil.encrypt(user.getPassword());
-            user.setPassword(encPassword);
+        	if (!StringUtils.isBlank(password)) {
+        		// パスワード暗号化
+        		String encPassword = CipherUtil.encrypt(user.getPassword());
+        		user.setPassword(encPassword);
         	}
             connection = getConnection();
             new UserDao().update(connection, user);

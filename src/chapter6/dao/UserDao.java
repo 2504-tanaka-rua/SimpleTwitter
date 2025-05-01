@@ -181,29 +181,13 @@ public class UserDao {
         StringBuilder sql = new StringBuilder();
 
         try {
-
-        if(StringUtils.isBlank(password)) {
-        	sql.append("UPDATE users SET ");
-        	sql.append("    account = ?, ");
-            sql.append("    name = ?, ");
-            sql.append("    email = ?, ");
-            sql.append("    description = ?, ");
-            sql.append("    updated_date = CURRENT_TIMESTAMP ");
-            sql.append("WHERE id = ?");
-          //用意した箱へsql文の代入
-            ps = connection.prepareStatement(sql.toString());
-          //sql文の？部分に値をセットしている
-            ps.setString(1, user.getAccount());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getEmail());
-            ps.setString(4, user.getDescription());
-            ps.setInt(5, user.getId());
-        	}else{
             sql.append("UPDATE users SET ");
             sql.append("    account = ?, ");
             sql.append("    name = ?, ");
             sql.append("    email = ?, ");
-            sql.append("    password = ?, ");
+            if (!StringUtils.isBlank(password)) {
+            	sql.append("    password = ?, ");
+            }
             sql.append("    description = ?, ");
             sql.append("    updated_date = CURRENT_TIMESTAMP ");
             sql.append("WHERE id = ?");
@@ -213,10 +197,14 @@ public class UserDao {
             ps.setString(1, user.getAccount());
             ps.setString(2, user.getName());
             ps.setString(3, user.getEmail());
-            ps.setString(4, user.getPassword());
-            ps.setString(5, user.getDescription());
-            ps.setInt(6, user.getId());
-        	}
+            if (StringUtils.isBlank(password)) {
+            	ps.setString(4, user.getDescription());
+            	ps.setInt(5, user.getId());
+            } else {
+            	ps.setString(4, user.getPassword());
+            	ps.setString(5, user.getDescription());
+            	ps.setInt(6, user.getId());
+            }
             //sql文の実行
             int count = ps.executeUpdate();
 
