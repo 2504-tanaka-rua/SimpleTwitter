@@ -32,14 +32,16 @@ public class UserMessageDao {
 
     }
 
-    public List<UserMessage> select(Connection connection, int num) {
+    public List<UserMessage> select(Connection connection,int num) {
 
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
         PreparedStatement ps = null;
+        StringBuilder sql = new StringBuilder();
+
         try {
-            StringBuilder sql = new StringBuilder();
+
             sql.append("SELECT ");
             sql.append("    messages.id as id, ");
             sql.append("    messages.text as text, ");
@@ -58,6 +60,7 @@ public class UserMessageDao {
 
             List<UserMessage> messages = toUserMessages(rs);
             return messages;
+
         } catch (SQLException e) {
 		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
             throw new SQLRuntimeException(e);

@@ -55,7 +55,8 @@ public class MessageService {
         }
     }
 
-    public List<UserMessage> select() {
+
+    	public List<UserMessage> select() {
 
   	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());
@@ -65,6 +66,7 @@ public class MessageService {
           Connection connection = null;
           try {
               connection = getConnection();
+
               List<UserMessage> messages = new UserMessageDao().select(connection, LIMIT_NUM);
               commit(connection);
 
