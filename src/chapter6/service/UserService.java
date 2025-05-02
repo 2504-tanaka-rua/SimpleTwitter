@@ -90,6 +90,27 @@ public class UserService {
 		}
 	}
 
+	public User select(String account) {
+
+		Connection connection = null;
+		try {
+			//Daoから帰ってきた情報がuserという変数に代入されている
+			connection = getConnection();
+			User user = new UserDao().select(connection, account);
+			commit(connection);
+
+			return user;
+		} catch (RuntimeException e) {
+			rollback(connection);
+			throw e;
+		} catch (Error e) {
+			rollback(connection);
+			throw e;
+		} finally {
+			close(connection);
+		}
+	}
+
 	public User select(int userId) {
 
 		log.info(new Object() { }.getClass().getEnclosingClass().getName() +

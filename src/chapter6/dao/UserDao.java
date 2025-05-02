@@ -115,6 +115,33 @@ public class UserDao {
 		}
 	}
 
+	public User select(Connection connection, String account) {
+
+		PreparedStatement ps = null;
+		try {
+			String sql = "SELECT * FROM users WHERE account = ?";
+
+			ps = connection.prepareStatement(sql);
+
+			ps.setString(1, account);
+
+			ResultSet rs = ps.executeQuery();
+			//加えられた情報を条件分岐している、NULLの場合か一見見つかった場合をreturn
+			List<User> users = toUsers(rs);
+			if (users.isEmpty()) {
+				return null;
+			} else if (2 <= users.size()) {
+				throw new IllegalStateException("ユーザーが重複しています");
+			} else {
+				return users.get(0);
+			}
+		} catch (SQLException e) {
+			throw new SQLRuntimeException(e);
+		} finally {
+			close(ps);
+		}
+	}
+	//送られてきたユーザー情報を順番にusersに加えている
 	private List<User> toUsers(ResultSet rs) throws SQLException {
 
 		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
