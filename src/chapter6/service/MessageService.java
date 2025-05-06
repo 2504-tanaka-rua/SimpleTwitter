@@ -37,9 +37,10 @@ public class MessageService {
 
 		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
 			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
-
+		//Connection型オブジェクトを作成（DB接続に必要）
 		Connection connection = null;
 		try {
+			//Connectionを有効化
 			connection = getConnection();
 			new MessageDao().insert(connection, message);
 			commit(connection);

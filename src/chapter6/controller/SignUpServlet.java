@@ -88,7 +88,7 @@ public class SignUpServlet extends HttpServlet {
 		String password = user.getPassword();
 		String email = user.getEmail();
 
-		User result = new UserService().select(account);
+		User duplicateUser = new UserService().select(account);
 
 		if (!StringUtils.isEmpty(name) && (20 < name.length())) {
 			errorMessages.add("名前は20文字以下で入力してください");
@@ -98,7 +98,9 @@ public class SignUpServlet extends HttpServlet {
 			errorMessages.add("アカウント名を入力してください");
 		} else if (20 < account.length()) {
 			errorMessages.add("アカウント名は20文字以下で入力してください");
-		} else if(result != null) {
+		//登録段階ですでにユーザーが返ってきたら重複しているとわかる
+		//nullか一人分のユーザー情報かどちらかが返ってくるため、そこで条件分岐
+		} else if (duplicateUser != null) {
 			errorMessages.add("すでに存在するアカウントです");
 		}
 

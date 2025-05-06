@@ -39,7 +39,7 @@ public class UserMessageDao {
 
 		PreparedStatement ps = null;
 		StringBuilder sql = new StringBuilder();
-
+		//つぶやきの表示
 		try {
 			sql.append("SELECT ");
 			sql.append("    messages.id as id, ");
@@ -51,6 +51,8 @@ public class UserMessageDao {
 			sql.append("FROM messages ");
 			sql.append("INNER JOIN users ");
 			sql.append("ON messages.user_id = users.id ");
+			//idがserviceを介してservletから渡ってきたらそのuseridに基づくユーザーの
+			//つぶやきのみを探す
 			if (id != null) {
 				sql.append("WHERE user_id = ? ");
 			}

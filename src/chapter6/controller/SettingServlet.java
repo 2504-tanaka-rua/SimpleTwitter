@@ -54,6 +54,7 @@ public class SettingServlet extends HttpServlet {
 	}
 
 	@Override
+	//ユーザー情報が入力されたらdoPostメソッドが動く
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -62,7 +63,7 @@ public class SettingServlet extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		List<String> errorMessages = new ArrayList<String>();
-
+		//下のgetUser(request)からreturnされたユーザー情報が入ってる
 		User user = getUser(request);
 		if (isValid(user, errorMessages)) {
 			try {
@@ -79,7 +80,7 @@ public class SettingServlet extends HttpServlet {
 			request.getRequestDispatcher("setting.jsp").forward(request, response);
 			return;
 		}
-
+		//ログイン情報は一定時間保持しておきたいからsession領域
 		session.setAttribute("loginUser", user);
 		response.sendRedirect("./");
 	}
@@ -96,7 +97,7 @@ public class SettingServlet extends HttpServlet {
 		user.setPassword(request.getParameter("password"));
 		user.setEmail(request.getParameter("email"));
 		user.setDescription(request.getParameter("description"));
-
+		//	入力されたユーザー情報がuserに代入されてる
 		return user;
 	}
 
@@ -108,18 +109,20 @@ public class SettingServlet extends HttpServlet {
 		String name = user.getName();
 		String account = user.getAccount();
 		String email = user.getEmail();
-		Integer id = user.getId();
-
-		User result = new UserService().select(account);
 
 		if (!StringUtils.isEmpty(name) && (20 < name.length())) {
 			errorMessages.add("名前は20文字以下で入力してください");
 		}
+		//重複したユーザー
+		User duplicateUser = new UserService().select(account);
+
 		if (StringUtils.isEmpty(account)) {
 			errorMessages.add("アカウント名を入力してください");
 		} else if (20 < account.length()) {
 			errorMessages.add("アカウント名は20文字以下で入力してください");
-		} else if(result != null && result.getId() != id){
+		//nullじゃないという前提（すでに登録済みのため）かつIdが一緒じゃないかの確認で
+		//他人のアカウントか自分のものかが判断できる
+		} else if (duplicateUser != null && duplicateUser.getId() != user.getId()){
 			errorMessages.add("すでに存在するアカウントです");
 		}
 

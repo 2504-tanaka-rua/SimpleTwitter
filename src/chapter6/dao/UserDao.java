@@ -119,6 +119,7 @@ public class UserDao {
 
 		PreparedStatement ps = null;
 		try {
+			//入力されたアカウント情報が存在してるか確認している（登録していいかの確認）
 			String sql = "SELECT * FROM users WHERE account = ?";
 
 			ps = connection.prepareStatement(sql);
@@ -126,10 +127,11 @@ public class UserDao {
 			ps.setString(1, account);
 
 			ResultSet rs = ps.executeQuery();
-			//加えられた情報を条件分岐している、NULLの場合か一見見つかった場合をreturn
+			//加えられた情報を条件分岐している、NULLの場合か一件見つかった場合をreturn
 			List<User> users = toUsers(rs);
 			if (users.isEmpty()) {
 				return null;
+			//すでに二つ以上存在していたら例外を投げる
 			} else if (2 <= users.size()) {
 				throw new IllegalStateException("ユーザーが重複しています");
 			} else {
