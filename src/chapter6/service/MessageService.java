@@ -59,6 +59,53 @@ public class MessageService {
 		}
 	}
 
+	public void delete(Message message, Integer id) {
+		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
+				" : " + new Object() { }.getClass().getEnclosingMethod().getName());
+
+		Connection connection = null;
+		try {
+
+			connection = getConnection();
+			new MessageDao().delete(connection, message, id);
+			commit(connection);
+		} catch (RuntimeException e) {
+			rollback(connection);
+			log.log(Level.SEVERE, new Object() { }.getClass().getEnclosingClass().getName() +
+				" : " + e.toString(), e);
+			throw e;
+		} catch (Error e) {
+			rollback(connection);
+			log.log(Level.SEVERE, new Object() { }.getClass().getEnclosingClass().getName() +
+				" : " + e.toString(), e);
+			throw e;
+		} finally {
+			close(connection);
+		}
+	}
+
+	public void update(Message message) {
+		Connection connection = null;
+		try {
+
+		connection = getConnection();
+		new MessageDao().update(connection, message);
+		commit(connection);
+		} catch (RuntimeException e) {
+		rollback(connection);
+		log.log(Level.SEVERE, new Object() { }.getClass().getEnclosingClass().getName() +
+			" : " + e.toString(), e);
+		throw e;
+		} catch (Error e) {
+		rollback(connection);
+		log.log(Level.SEVERE, new Object() { }.getClass().getEnclosingClass().getName() +
+			" : " + e.toString(), e);
+		throw e;
+		} finally {
+		close(connection);
+		}
+	}
+
 	/*
 	 * selectの引数にString型のuserIdを追加
 	 */
@@ -93,6 +140,33 @@ public class MessageService {
 
 			return messages;
 		} catch (RuntimeException e) {
+			rollback(connection);
+			log.log(Level.SEVERE, new Object() { }.getClass().getEnclosingClass().getName() +
+				" : " + e.toString(), e);
+			throw e;
+		} catch (Error e) {
+			rollback(connection);
+			log.log(Level.SEVERE, new Object() { }.getClass().getEnclosingClass().getName() +
+				" : " + e.toString(), e);
+			throw e;
+		} finally {
+			close(connection);
+		}
+	}
+
+	public Message select(Integer id) {
+		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
+				" : " + new Object() { }.getClass().getEnclosingMethod().getName());
+
+		Connection connection = null;
+		try {
+			connection = getConnection();
+
+			Message message = new MessageDao().select(connection, id);
+			commit(connection);
+
+			return message;
+		}catch (RuntimeException e) {
 			rollback(connection);
 			log.log(Level.SEVERE, new Object() { }.getClass().getEnclosingClass().getName() +
 				" : " + e.toString(), e);

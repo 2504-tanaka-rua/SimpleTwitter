@@ -4,7 +4,10 @@ import static chapter6.utils.CloseableUtil.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +59,108 @@ public class MessageDao {
 
 			ps.executeUpdate();
 		} catch (SQLException e) {
+			log.log(Level.SEVERE, new Object() {
+			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+			throw new SQLRuntimeException(e);
+		} finally {
+			close(ps);
+		}
+	}
+
+	public void delete(Connection connection, Message message, Integer id) {
+
+		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
+				" : " + new Object() { }.getClass().getEnclosingMethod().getName());
+
+		PreparedStatement ps = null;
+		try {
+			String sql = "DELETE FROM messages WHERE id = ?";
+
+			ps = connection.prepareStatement(sql);
+
+			ps.setInt(1, id);
+
+			ps.executeUpdate();
+		}catch (SQLException e) {
+			log.log(Level.SEVERE, new Object() {
+			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+			throw new SQLRuntimeException(e);
+		} finally {
+			close(ps);
+		}
+	}
+
+	public  Message select(Connection connection, Integer id) {
+
+		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
+				" : " + new Object() { }.getClass().getEnclosingMethod().getName());
+
+		PreparedStatement ps = null;
+		try {
+			String sql = "SELECT * FROM messages WHERE id = ?";
+
+			ps = connection.prepareStatement(sql);
+
+			ps.setInt(1, id);
+
+			ResultSet rs = ps.executeQuery();
+
+			List<Message> messages = toMessages(rs);
+
+			if (messages.isEmpty()) {
+				return null;
+			} else if (2 <= messages.size()) {
+				log.log(Level.SEVERE, "複数のつぶやきが見つかりました",
+						new IllegalStateException());
+				throw new IllegalStateException("複数のつぶやきが見つかりました");
+			} else {
+				return messages.get(0);
+			}
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, new Object() {
+			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+			throw new SQLRuntimeException(e);
+		} finally {
+			close(ps);
+		}
+	}
+
+	private List<Message> toMessages(ResultSet rs) throws SQLException {
+
+		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
+			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
+
+		List<Message> messages = new ArrayList<Message>();
+		try {
+			while (rs.next()) {
+				Message message = new Message();
+				message.setId(Integer.parseInt(rs.getString("id")));
+				message.setText(rs.getString("text"));
+
+				messages.add(message);
+			}
+			return messages;
+		} finally {
+			close(rs);
+		}
+	}
+
+	public void update(Connection connection, Message message) {
+
+		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
+				" : " + new Object() { }.getClass().getEnclosingMethod().getName());
+
+		PreparedStatement ps = null;
+		try {
+			String sql = "UPDATE messages SET text = ? WHERE id = ?";
+
+			ps = connection.prepareStatement(sql);
+
+			ps.setString(1, message.getText());
+			ps.setInt(2, message.getId());
+
+			ps.executeUpdate();
+		}catch (SQLException e) {
 			log.log(Level.SEVERE, new Object() {
 			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
 			throw new SQLRuntimeException(e);

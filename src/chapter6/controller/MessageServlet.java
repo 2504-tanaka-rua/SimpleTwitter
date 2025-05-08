@@ -60,6 +60,7 @@ public class MessageServlet extends HttpServlet {
 		User user = (User) session.getAttribute("loginUser");
 		message.setUserId(user.getId());
 
+
 		new MessageService().insert(message);
 		response.sendRedirect("./");
 	}
