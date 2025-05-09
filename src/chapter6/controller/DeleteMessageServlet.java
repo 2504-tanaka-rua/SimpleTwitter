@@ -38,14 +38,12 @@ public class DeleteMessageServlet extends HttpServlet {
 			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
 
 		String messageId = request.getParameter("message_id");
-
-		Integer id = null;
-		id = Integer.parseInt(messageId);
+		Integer id = Integer.parseInt(messageId);
 
 		Message message = new Message();
 		message.setId(id);
 
-		new MessageService().delete(message ,id);
+		new MessageService().delete(message);
 		response.sendRedirect("./");
 	}
 }

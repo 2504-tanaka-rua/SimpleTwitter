@@ -59,15 +59,14 @@ public class MessageService {
 		}
 	}
 
-	public void delete(Message message, Integer id) {
+	public void delete(Message message) {
 		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
 				" : " + new Object() { }.getClass().getEnclosingMethod().getName());
 
 		Connection connection = null;
 		try {
-
 			connection = getConnection();
-			new MessageDao().delete(connection, message, id);
+			new MessageDao().delete(connection, message);
 			commit(connection);
 		} catch (RuntimeException e) {
 			rollback(connection);
@@ -84,12 +83,12 @@ public class MessageService {
 		}
 	}
 
-	public void update(Message message) {
+	public void update(String text, Integer id) {
 		Connection connection = null;
 		try {
 
 		connection = getConnection();
-		new MessageDao().update(connection, message);
+		new MessageDao().update(connection, text, id);
 		commit(connection);
 		} catch (RuntimeException e) {
 		rollback(connection);

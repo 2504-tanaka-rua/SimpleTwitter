@@ -37,6 +37,36 @@ public class EditServlet extends HttpServlet {
 	}
 
 	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
+
+		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
+			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
+
+		HttpSession session = request.getSession();
+		List<String> errorMessages = new ArrayList<String>();
+
+		String messageId = request.getParameter("message_id");
+
+		Message message = null;
+
+		if(NumberUtils.isDigits(messageId) && !StringUtils.isBlank(messageId)) {
+			Integer id = Integer.parseInt(messageId);
+			message = new MessageService().select(id);
+		}
+
+		if(message != null) {
+			request.setAttribute("message", message);
+			request.getRequestDispatcher("/edit.jsp").forward(request, response);
+		} else {
+				errorMessages.add("不正なパラメータが入力されました");
+				session.setAttribute("errorMessages", errorMessages);
+				response.sendRedirect("./");
+				return;
+		}
+	}
+
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 
@@ -46,23 +76,18 @@ public class EditServlet extends HttpServlet {
 		List<String> errorMessages = new ArrayList<String>();
 
 		String text = request.getParameter("text");
-		Message editText = getMessage(request);
+		String messageId = request.getParameter("id");
+		Integer id = Integer.parseInt(messageId);
+
+		Message message = getMessage(request);
+
 		if (!isValid(text, errorMessages)) {
 			request.setAttribute("errorMessages", errorMessages);
-			request.setAttribute("message",editText);
+			request.setAttribute("message",message);
 			request.getRequestDispatcher("/edit.jsp").forward(request, response);
 			return;
 		}
-
-		String messageId = request.getParameter("id");
-		Integer id = null;
-		id = Integer.parseInt(messageId);
-
-		Message message = new Message();
-		message.setText(text);
-		message.setId(id);
-
-		new MessageService().update(message);
+		new MessageService().update(text, id);
 		response.sendRedirect("./");
 	}
 
@@ -71,11 +96,11 @@ public class EditServlet extends HttpServlet {
 		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
 			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
 
-		Message editText = new Message();
-		editText.setId(Integer.parseInt(request.getParameter("id")));
-		editText.setText(request.getParameter("text"));
+		Message message = new Message();
+		message.setId(Integer.parseInt(request.getParameter("id")));
+		message.setText(request.getParameter("text"));
 
-		return editText;
+		return message;
 	}
 
 	private boolean isValid(String text, List<String> errorMessages) {
@@ -93,38 +118,5 @@ public class EditServlet extends HttpServlet {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-
-		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
-			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
-
-		HttpSession session = request.getSession();
-		List<String> errorMessages = new ArrayList<String>();
-
-		errorMessages.add("不正なパラメータが入力されました");
-
-		String messageId = request.getParameter("message_id");
-
-
-		if(NumberUtils.isDigits(messageId) && !StringUtils.isBlank(messageId)) {
-			Integer id = null;
-			id = Integer.parseInt(messageId);
-			Message message = new MessageService().select(id);
-			if(message == null) {
-				session.setAttribute("errorMessages", errorMessages);
-				response.sendRedirect("./");
-				return;
-			}
-			request.setAttribute("message", message);
-		} else {
-				session.setAttribute("errorMessages", errorMessages);
-				response.sendRedirect("./");
-				return;
-		}
-		request.getRequestDispatcher("/edit.jsp").forward(request, response);
 	}
 }
