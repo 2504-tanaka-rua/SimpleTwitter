@@ -59,10 +59,10 @@ public class EditServlet extends HttpServlet {
 			request.setAttribute("message", message);
 			request.getRequestDispatcher("/edit.jsp").forward(request, response);
 		} else {
-				errorMessages.add("不正なパラメータが入力されました");
-				session.setAttribute("errorMessages", errorMessages);
-				response.sendRedirect("./");
-				return;
+			errorMessages.add("不正なパラメータが入力されました");
+			session.setAttribute("errorMessages", errorMessages);
+			response.sendRedirect("./");
+			return;
 		}
 	}
 
@@ -75,19 +75,15 @@ public class EditServlet extends HttpServlet {
 
 		List<String> errorMessages = new ArrayList<String>();
 
-		String text = request.getParameter("text");
-		String messageId = request.getParameter("id");
-		Integer id = Integer.parseInt(messageId);
-
 		Message message = getMessage(request);
 
-		if (!isValid(text, errorMessages)) {
+		if (!isValid(message, errorMessages)) {
 			request.setAttribute("errorMessages", errorMessages);
 			request.setAttribute("message",message);
 			request.getRequestDispatcher("/edit.jsp").forward(request, response);
 			return;
 		}
-		new MessageService().update(text, id);
+		new MessageService().update(message);
 		response.sendRedirect("./");
 	}
 
@@ -103,14 +99,14 @@ public class EditServlet extends HttpServlet {
 		return message;
 	}
 
-	private boolean isValid(String text, List<String> errorMessages) {
+	private boolean isValid(Message message, List<String> errorMessages) {
 
 		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
 			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
 
-		if (StringUtils.isBlank(text)) {
+		if (StringUtils.isBlank(message.getText())) {
 			errorMessages.add("メッセージを入力してください");
-		} else if (140 < text.length()) {
+		} else if (140 < message.getText().length()) {
 			errorMessages.add("140文字以下で入力してください");
 		}
 

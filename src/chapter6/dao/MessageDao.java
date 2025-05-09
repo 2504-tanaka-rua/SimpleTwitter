@@ -145,7 +145,7 @@ public class MessageDao {
 		}
 	}
 
-	public void update(Connection connection, String text, Integer id) {
+	public void update(Connection connection, Message message) {
 
 		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
 				" : " + new Object() { }.getClass().getEnclosingMethod().getName());
@@ -156,8 +156,8 @@ public class MessageDao {
 
 			ps = connection.prepareStatement(sql);
 
-			ps.setString(1, text);
-			ps.setInt(2, id);
+			ps.setString(1, message.getText());
+			ps.setInt(2, message.getId());
 
 			ps.executeUpdate();
 		}catch (SQLException e) {

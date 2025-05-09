@@ -83,12 +83,12 @@ public class MessageService {
 		}
 	}
 
-	public void update(String text, Integer id) {
+	public void update(Message message) {
 		Connection connection = null;
 		try {
 
 		connection = getConnection();
-		new MessageDao().update(connection, text, id);
+		new MessageDao().update(connection, message);
 		commit(connection);
 		} catch (RuntimeException e) {
 		rollback(connection);
