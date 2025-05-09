@@ -51,7 +51,7 @@ public class EditServlet extends HttpServlet {
 		Message message = null;
 
 		if(NumberUtils.isDigits(messageId) && !StringUtils.isBlank(messageId)) {
-			Integer id = Integer.parseInt(messageId);
+			int id = Integer.parseInt(messageId);
 			message = new MessageService().select(id);
 		}
 

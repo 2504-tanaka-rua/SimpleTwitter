@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import chapter6.beans.Message;
 import chapter6.logging.InitApplication;
 import chapter6.service.MessageService;
 
@@ -38,12 +37,9 @@ public class DeleteMessageServlet extends HttpServlet {
 			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
 
 		String messageId = request.getParameter("message_id");
-		Integer id = Integer.parseInt(messageId);
+		int id = Integer.parseInt(messageId);
 
-		Message message = new Message();
-		message.setId(id);
-
-		new MessageService().delete(message);
+		new MessageService().delete(id);
 		response.sendRedirect("./");
 	}
 }
