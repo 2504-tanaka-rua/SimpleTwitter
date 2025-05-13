@@ -4,6 +4,8 @@ import static chapter6.utils.CloseableUtil.*;
 import static chapter6.utils.DBUtil.*;
 
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -108,7 +110,7 @@ public class MessageService {
 	/*
 	 * selectの引数にString型のuserIdを追加
 	 */
-	public List<UserMessage> select(String userId) {
+	public List<UserMessage> select(String userId, String start, String end) {
 		final int LIMIT_NUM = 1000;
 
 		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
@@ -134,7 +136,28 @@ public class MessageService {
 			 * idがnull以外だったら、その値に対応するユーザーIDの投稿を取得する
 			 */
 
-			List<UserMessage> messages = new UserMessageDao().select(connection, id, LIMIT_NUM);
+			//現在の時刻を取得するためのCalendar型のインスタンスを作成
+			Calendar cl = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			//現在時刻の情報を取得
+			String endDate = sdf.format(cl.getTime());
+			String startDate = "2020-01-01 00:00:00";
+
+			//空白やnullでもデフォルト値を取得するように設定
+			if(!StringUtils.isBlank(start)) {
+				start = start + " 00:00:00";
+			} else {
+				start = startDate;
+			}
+
+			if(!StringUtils.isBlank(end)) {
+				end = end + " 23:59:59";
+			} else {
+				end = endDate;
+			}
+
+
+			List<UserMessage> messages = new UserMessageDao().select(connection, id, start, end, LIMIT_NUM);
 			commit(connection);
 
 			return messages;

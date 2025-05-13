@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import chapter6.beans.User;
+import chapter6.beans.UserComment;
 import chapter6.beans.UserMessage;
 import chapter6.logging.InitApplication;
+import chapter6.service.CommentService;
 import chapter6.service.MessageService;
 
 @WebServlet(urlPatterns = { "/index.jsp" })
@@ -43,9 +45,11 @@ public class TopServlet extends HttpServlet {
 			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
 
 		boolean isShowMessageForm = false;
+		boolean isShowCommentForm = false;
 		User user = (User) request.getSession().getAttribute("loginUser");
 		if (user != null) {
 			isShowMessageForm = true;
+			isShowCommentForm = true;
 		}
 
 		/*
@@ -54,10 +58,21 @@ public class TopServlet extends HttpServlet {
 		 * MessageServiceのselectに引数としてString型のuser_idを追加
 		 */
 		String userId = request.getParameter("user_id");
-		List<UserMessage> messages = new MessageService().select(userId);
+		//入力された日付の情報を取得
+		String start = request.getParameter("start");
+		String end = request.getParameter("end");
+
+		List<UserMessage> messages = new MessageService().select(userId, start, end);
+		List<UserComment> comments = new CommentService().select();
+
+		//入力した日付が保持されるように値をセットする
+		request.setAttribute("start", start);
+		request.setAttribute("end", end);
 
 		request.setAttribute("messages", messages);
+		request.setAttribute("comments", comments);
 		request.setAttribute("isShowMessageForm", isShowMessageForm);
+		request.setAttribute("isShowCommentForm", isShowCommentForm);
 		request.getRequestDispatcher("/top.jsp").forward(request, response);
 	}
 }

@@ -32,7 +32,7 @@ public class UserMessageDao {
 
 	}
 
-	public List<UserMessage> select(Connection connection, Integer id, int num) {
+	public List<UserMessage> select(Connection connection, Integer id, String start, String end, int num) {
 
 		log.info(new Object() { }.getClass().getEnclosingClass().getName() +
 			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
@@ -51,17 +51,22 @@ public class UserMessageDao {
 			sql.append("FROM messages ");
 			sql.append("INNER JOIN users ");
 			sql.append("ON messages.user_id = users.id ");
+			sql.append("WHERE messages.created_date BETWEEN ? AND ? ");
 			//idがserviceを介してservletから渡ってきたらそのuseridに基づくユーザーの
 			//つぶやきのみを探す
 			if (id != null) {
-				sql.append("WHERE user_id = ? ");
+				sql.append("AND user_id = ? ");
 			}
 			sql.append("ORDER BY created_date DESC limit " + num);
 
 			ps = connection.prepareStatement(sql.toString());
 
+			//?に引数で渡された値を代入
+			ps.setString(1, start);
+			ps.setString(2, end);
+
 			if (id != null) {
-				ps.setInt(1, id);
+				ps.setInt(3, id);
 			}
 
 			ResultSet rs = ps.executeQuery();
