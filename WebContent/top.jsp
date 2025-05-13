@@ -23,6 +23,13 @@
 	        		<a href="logout">ログアウト</a>
 	    		</c:if>
 	    	</div>
+	    	<div class = "calendar">
+	    		<form action="./" method="get">
+	    			<input type="date" name="start" value="${start}">～
+	    			<input type="date" name="end" value="${end}">
+	    			<button type="submit">絞込</button>
+	    		</form>
+	    	</div>
 	    	<c:if test="${ not empty loginUser }">
 	    		<div class="profile">
 	        		<div class="name"><h2><c:out value="${loginUser.name}" /></h2></div>
@@ -80,6 +87,31 @@
 						<input type="hidden" name="message_id" value="${message.id}">
 					</form>
 				</c:if>
+				<div class="comments">
+					<c:forEach items="${comments}" var="comment">
+						<c:if test="${message.id == comment.messageId}">
+							<div class="comment">
+								<div class="account-name">
+									<span class="account"><c:out value="${comment.account}" /></span>
+									<span class="name"><c:out value="${comment.name}" /></span>
+								</div>
+								<div class="text"><pre><c:out value="${comment.text}" /></pre></div>
+								<div class="date"><fmt:formatDate value="${comment.createdDate}" pattern="yyyy/MM/dd HH:mm:ss" /></div>
+							</div>
+						</c:if>
+					</c:forEach>
+				</div>
+				<div class="form-area">
+					<c:if test="${ isShowCommentForm }">
+						<form action="comment" method="post">
+							返信<br />
+							<textarea name="comment_text" cols="100" rows="5" class="tweet-box"></textarea>
+							<br />
+							<input type="submit" value="返信">
+							<input type="hidden" name="message_id" value="${message.id}">
+						</form>
+					</c:if>
+				</div>
 			</c:forEach>
 		</div>
 	</body>
