@@ -130,30 +130,21 @@ public class MessageService {
 				id = Integer.parseInt(userId);
 			}
 
-			/*
-			 * messageDao.selectに引数としてInteger型のidを追加
-			 * idがnullだったら全件取得する
-			 * idがnull以外だったら、その値に対応するユーザーIDの投稿を取得する
-			 */
-
-			//現在の時刻を取得するためのCalendar型のインスタンスを作成
-			Calendar cl = Calendar.getInstance();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			//現在時刻の情報を取得
-			String endDate = sdf.format(cl.getTime());
-			String startDate = "2020-01-01 00:00:00";
-
 			//空白やnullでもデフォルト値を取得するように設定
 			if(!StringUtils.isBlank(start)) {
 				start = start + " 00:00:00";
 			} else {
-				start = startDate;
+				start = "2020-01-01 00:00:00";
 			}
 
 			if(!StringUtils.isBlank(end)) {
 				end = end + " 23:59:59";
 			} else {
-				end = endDate;
+				//現在の時刻を取得するためのCalendar型のインスタンスを作成
+				Calendar cl = Calendar.getInstance();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				//現在時刻の情報を取得
+				end = sdf.format(cl.getTime());
 			}
 
 

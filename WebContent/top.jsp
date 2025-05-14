@@ -102,7 +102,7 @@
 					</c:forEach>
 				</div>
 				<div class="form-area">
-					<c:if test="${ isShowCommentForm }">
+					<c:if test="${ isShowMessageForm }">
 						<form action="comment" method="post">
 							返信<br />
 							<textarea name="comment_text" cols="100" rows="5" class="tweet-box"></textarea>

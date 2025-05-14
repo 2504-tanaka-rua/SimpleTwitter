@@ -45,11 +45,9 @@ public class TopServlet extends HttpServlet {
 			" : " + new Object() { }.getClass().getEnclosingMethod().getName());
 
 		boolean isShowMessageForm = false;
-		boolean isShowCommentForm = false;
 		User user = (User) request.getSession().getAttribute("loginUser");
 		if (user != null) {
 			isShowMessageForm = true;
-			isShowCommentForm = true;
 		}
 
 		/*
@@ -71,7 +69,6 @@ public class TopServlet extends HttpServlet {
 		request.setAttribute("messages", messages);
 		request.setAttribute("comments", comments);
 		request.setAttribute("isShowMessageForm", isShowMessageForm);
-		request.setAttribute("isShowCommentForm", isShowCommentForm);
 		request.getRequestDispatcher("/top.jsp").forward(request, response);
 	}
 }

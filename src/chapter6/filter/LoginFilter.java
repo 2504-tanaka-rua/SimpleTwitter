@@ -20,10 +20,6 @@ import chapter6.beans.User;
 @WebFilter(urlPatterns = {"/edit", "/setting"})
 public class LoginFilter implements Filter {
 
-	public static String INIT_PARAMETER_NAME_ENCODING = "encoding";
-
-	public static String DEFAULT_ENCODING = "UTF-8";
-
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
