@@ -7,6 +7,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="./js/jquery-3.7.1.min.js"></script>
+        <script src="./js/main.js"></script>
         <link href="./css/style.css" rel="stylesheet" type="text/css">
         <title>簡易Twitter</title>
     </head>
@@ -76,7 +78,7 @@
 				<c:if test="${ not empty loginUser and loginUser.id == message.userId}">
 					<form action="deleteMessage" method="post">
 						<div>
-							<button type="submit">削除</button>
+							<button type="submit" class="delete">削除</button>
 						</div>
 						<input type="hidden" name="message_id" value="${message.id}">
 					</form>

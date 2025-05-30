@@ -7,7 +7,7 @@ body {
 	margin-bottom: 0px;
 	margin-left: 20px;
 	margin-right: 20px;
-	background-color: white;
+	background-color: silver;
 	height: 100%;
 	width: 800px;
 }
@@ -59,7 +59,7 @@ a.profile .account {
 	margin-right: 00px;
 	margin-bottom: 00px;
 	margin-left: 00px;
-	background-color: mistyrose;
+	background-color: ghostwhite;
 }
 
 .message-icon {
@@ -98,13 +98,13 @@ a.profile .account {
 
 .account-name .name {
 	font-weight: lighter;
-	color: violet;
+	color: red;
 	font: small-caption;
 }
 
 .message .date {
 	font-weight: lighter;
-	color: violet;
+	color: red;
 	font: small-caption;
 }
 
